@@ -50,7 +50,8 @@ export const mutations = {
         state.items.push(value)
     },
     removeItem(state, value) {
-        state.items.splice(state.items.indexOf(value), 1)
+        const i = state.items.map(x=>x.id).indexOf(value.id)
+        state.items.splice(i,1)
     },
     deleteItem(state, value){
         value.isDeleted = true

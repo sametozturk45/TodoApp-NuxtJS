@@ -42,13 +42,13 @@
                     </v-tooltip>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn v-bind="attrs" v-on="on" small icon>
+                            <v-btn @click="removeItem(item)" v-bind="attrs" v-on="on" small icon>
                                 <v-icon small>
                                     mdi-delete
                                 </v-icon>
                             </v-btn>
                         </template>
-                        <span>Kurtar</span>
+                        <span>Sil</span>
                     </v-tooltip>
                 </template>
                 </v-data-table>
@@ -77,6 +77,10 @@
                 this.model = JSON.parse(JSON.stringify(item))
                 this.saveHandler()
             },
+            removeItem(item){
+                this.model = JSON.parse(JSON.stringify(item))
+                this.removeHandler()
+            },
             async saveHandler(){
                 try {
                     this.model.isDeleted = false
@@ -84,7 +88,17 @@
                     this.$nuxt.$emit('show-alert', { text: 'Başarıyla kurtarıldı !', color: 'success' })
                     this.closeModal()
                 } catch (error) {
-                    this.$nuxt.$emit('show-alert', { text: 'Çalışma ortamı eklenirken bir hata oluştu !', color: 'error' })
+                    this.$nuxt.$emit('show-alert', { text: 'Çalışma ortamı kurtarılırken bir hata oluştu !', color: 'error' })
+                    throw error
+                }
+            },
+            async removeHandler(){
+                try {
+                    await this.$store.dispatch(`workspaces/removeItem`,this.model)
+                    this.$nuxt.$emit('show-alert', { text: 'Başarıyla silindi !', color: 'success' })
+                    this.closeModal()
+                } catch (error) {
+                    this.$nuxt.$emit('show-alert', { text: 'Çalışma ortamı silinirken bir hata oluştu !', color: 'error' })
                     throw error
                 }
             },
